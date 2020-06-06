@@ -3,6 +3,8 @@ package database
 import (
 	"database/sql"
 	"log"
+	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -121,4 +123,19 @@ func (mr *MigrationRunner) persistAppliedMigration(migration *migration) {
 		log.Fatalf("Failed persisting applied migration %s - %s: %v",
 			migration.Version, migration.Description, err)
 	}
+}
+
+func loadMigrationFilePaths() ([]string, error) {
+	var files []string
+
+	migrationDirPath := filepath.FromSlash("resources/db/migration/")
+
+	err := filepath.Walk(migrationDirPath, func(migrationDirPath string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			files = append(files, migrationDirPath)
+		}
+		return nil
+	})
+
+	return files, err
 }
