@@ -184,3 +184,49 @@ func loadMigrationFile(path string) migration {
 		Script:      string(content),
 		Checksum:    checksum}
 }
+
+func (mr *MigrationRunner) isMigrationProcessed(migration *migration) bool {
+	storedMigration := mr.getMigration(migration.Version)
+
+	if storedMigration.Version == "" {
+		return false
+	}
+
+	if storedMigration.Checksum != migration.Checksum {
+		log.Fatalf("Validation failed for migration %s: Expected checksum was %s, but got %s",
+			migration.Version, storedMigration.Checksum, migration.Checksum)
+	}
+
+	return true
+}
+
+func (mr *MigrationRunner) applyMigration(migration *migration) {
+	log.Printf("Applying migration %s - %s", migration.Version, migration.Description)
+
+	if _, err := mr.database.Exec(migration.Script); err != nil {
+		log.Fatalf("Failed applying %s - %s: %v", migration.Version, migration.Description, err)
+	}
+
+	mr.persistAppliedMigration(migration)
+	log.Printf("Successfully applied migration %s - %s", migration.Version, migration.Description)
+}
+
+// ProcessMigrations prints the migrations files
+func (mr *MigrationRunner) ProcessMigrations() {
+	migrationFiles, err := loadMigrationFilePaths()
+	if err != nil {
+		log.Panic(err)
+	}
+
+	for _, path := range migrationFiles {
+		migration := loadMigrationFile(path)
+
+		if mr.isMigrationProcessed(&migration) {
+			continue
+		}
+
+		mr.applyMigration(&migration)
+	}
+
+	log.Printf("Successfully processed %d migrations \n", len(migrationFiles))
+}
