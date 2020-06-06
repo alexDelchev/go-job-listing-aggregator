@@ -1,10 +1,17 @@
 package database
 
 import (
+	"bytes"
+	"crypto/md5"
 	"database/sql"
+	"encoding/hex"
+	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -138,4 +145,42 @@ func loadMigrationFilePaths() ([]string, error) {
 	})
 
 	return files, err
+}
+
+func generateChecksum(data []byte) string {
+	hash := md5.New()
+
+	if _, err := io.Copy(hash, bytes.NewReader(data)); err != nil {
+		log.Fatal(err)
+	}
+
+	return hex.EncodeToString(hash.Sum(nil))
+}
+
+func getMigrationName(path string) string {
+	tokens := strings.Split(path, string(os.PathSeparator))
+	return tokens[len(tokens)-1]
+}
+
+func loadMigrationFile(path string) migration {
+	content, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	migrationName := getMigrationName(path)
+
+	migrationFileNameRegex := regexp.MustCompile("(?i)(.*)__(.*)\\.(sql|txt)")
+
+	version := migrationFileNameRegex.ReplaceAll([]byte(migrationName), []byte("$1"))
+
+	description := migrationFileNameRegex.ReplaceAll([]byte(migrationName), []byte("$2"))
+
+	checksum := generateChecksum(content)
+
+	return migration{
+		Version:     string(version),
+		Description: string(description),
+		Script:      string(content),
+		Checksum:    checksum}
 }
