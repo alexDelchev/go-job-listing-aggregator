@@ -72,3 +72,53 @@ func (mr *MigrationRunner) ensureVersionTableExistence() {
 		log.Fatal(err)
 	}
 }
+
+func (mr *MigrationRunner) getMigration(version string) migration {
+	var result migration
+
+	query := `
+		SELECT
+			version,
+			description,
+			script,
+			checksum,
+			script_execution_time
+		FROM
+			public.database_version
+		WHERE
+			version = $1`
+
+	rows, err := mr.database.Query(query, version)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if rows.Next() {
+		rows.Scan(&result.Version, &result.Description,
+			&result.Script, &result.Checksum,
+			&result.ScriptExecutionTime)
+	}
+
+	return result
+}
+
+func (mr *MigrationRunner) persistAppliedMigration(migration *migration) {
+	statement := `
+		INSERT INTO public.database_version(
+			version, 
+			description, 
+			script, 
+			checksum
+		) VALUES (
+			$1,
+			$2,
+			$3,
+			$4
+		)`
+
+	if _, err := mr.database.Exec(statement,
+		migration.Version, migration.Description, migration.Script, migration.Checksum); err != nil {
+		log.Fatalf("Failed persisting applied migration %s - %s: %v",
+			migration.Version, migration.Description, err)
+	}
+}
