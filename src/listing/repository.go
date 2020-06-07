@@ -2,6 +2,7 @@ package listing
 
 import (
 	"database/sql"
+	"log"
 
 	"github.com/lib/pq"
 )
@@ -36,4 +37,40 @@ func scanRows(rows *sql.Rows) Listing {
 		&result.QueryID, &result.SourceName)
 
 	return result
+}
+
+func (r *repositoryImplementation) getListingByID(id uint64) (Listing, error) {
+	var result Listing
+
+	query := `
+		SELECT 
+			listing_id, 
+			external_id, 
+			link, 
+			name, 
+			company,
+			work_schedule, 
+			location, 
+			posting_date,
+			description,
+			keywords,
+			query_id,
+			source_name
+		FROM
+			listing
+		WHERE
+			listing_id = $1`
+
+	rows, err := r.database.Query(query, id)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		result = scanRows(rows)
+	}
+
+	return result, nil
 }
