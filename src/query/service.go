@@ -31,3 +31,10 @@ type ServiceImplementation struct {
 func (s *ServiceImplementation) GetQueryByID(id uint64) (Query, error) {
 	return s.repository.getQueryByID(id)
 }
+
+// GetActiveQueries returns a slice of Queries where Query.Active == true.
+// The returned error is not nil if there was an error in the repository
+// layer.
+func (s *ServiceImplementation) GetActiveQueries() ([]Query, error) {
+	return s.repository.getActiveQueries()
+}
