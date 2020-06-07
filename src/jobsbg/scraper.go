@@ -5,6 +5,7 @@ import (
 	"go-job-listing-aggregator/src/query"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -42,4 +43,16 @@ func getListingDescription(url string) string {
 	tables := document.Find("body > table > tbody > tr > td > table")
 
 	return goquery.NewDocumentFromNode(tables.Get(1)).Text()
+}
+
+func formatPublishingDateString(text string) string {
+	dateLayout := "02.01.06"
+
+	if text == "днес" {
+		return time.Now().Format(dateLayout)
+	} else if text == "вчера" {
+		return time.Now().AddDate(0, 0, -1).Format(dateLayout)
+	} else {
+		return text
+	}
 }
