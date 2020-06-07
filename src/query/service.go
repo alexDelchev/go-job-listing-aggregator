@@ -28,6 +28,12 @@ type ServiceImplementation struct {
 	repository repository
 }
 
+// NewService returns a Service interface which holds the pointer
+// to a new ServiceImplementation struct.
+func NewService(repository repository) Service {
+	return &ServiceImplementation{repository: repository}
+}
+
 // GetQueryByID returns the Query for the given ID. The returned error
 // is not nil if there was an error in the repository layer.
 func (s *ServiceImplementation) GetQueryByID(id uint64) (Query, error) {
