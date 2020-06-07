@@ -12,6 +12,14 @@ type Scheduler struct {
 	stopChannel chan<- bool
 }
 
+// NewScheduler creates a new Scheduler and starts
+// the scheduled execution.
+func NewScheduler(scraper *Scraper) Scheduler {
+	scheduler := Scheduler{Scraper: scraper}
+	scheduler.Start()
+	return scheduler
+}
+
 type task func()
 
 func schedule(action task, interval time.Duration) chan<- bool {
