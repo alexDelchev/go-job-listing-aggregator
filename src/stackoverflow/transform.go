@@ -45,3 +45,14 @@ func transformToListingModel(queryID uint64, rssModel *jobListingRSSModel) listi
 		QueryID:     queryID,
 		SourceName:  SourceName}
 }
+
+func transformToListingModelSlice(queryID uint64, rssModels []jobListingRSSModel) []listing.Listing {
+	var result []listing.Listing
+
+	for _, rssModel := range rssModels {
+		model := transformToListingModel(queryID, &rssModel)
+		result = append(result, model)
+	}
+
+	return result
+}
