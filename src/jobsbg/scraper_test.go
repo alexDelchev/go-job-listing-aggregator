@@ -70,3 +70,34 @@ func TestDeconstructInfoTagsElement(t *testing.T) {
 			errorMesssagePrefix, expectedSlice, actualSlice)
 	}
 }
+
+func TestDeconstructListingAnchor(t *testing.T) {
+	const html string = `<a href="job/123">test_placeholder</a>`
+
+	documentHTML := fmt.Sprintf("<html><body>%s</body></html>", html)
+	document, _ := goquery.NewDocumentFromReader(strings.NewReader(documentHTML))
+
+	anchor := document.Find("a").First()
+
+	expectedFirstValue := "test_placeholder"
+	expectedSecondValue := domain + "job/123"
+	expectedThirdValue := "123"
+
+	actualFirstValue, actualSecondValue, actualThirdValue := deconstructListingAnchor(anchor)
+
+	var errorMesssagePrefix string = fmt.Sprintf("%s failed:", t.Name())
+	if expectedFirstValue != actualFirstValue {
+		t.Errorf("%s Expected first value %s, got %s",
+			errorMesssagePrefix, expectedFirstValue, actualFirstValue)
+	}
+
+	if expectedSecondValue != actualSecondValue {
+		t.Errorf("%s Expected second value %s, got %s",
+			errorMesssagePrefix, expectedSecondValue, actualSecondValue)
+	}
+
+	if expectedThirdValue != actualThirdValue {
+		t.Errorf("%s Expected thrid value %s, got %s",
+			errorMesssagePrefix, expectedThirdValue, actualThirdValue)
+	}
+}
