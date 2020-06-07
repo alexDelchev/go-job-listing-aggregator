@@ -1,6 +1,7 @@
 package github
 
 import (
+	"log"
 	"time"
 )
 
@@ -31,4 +32,31 @@ func schedule(action task, interval time.Duration) chan<- bool {
 	}()
 
 	return quit
+}
+
+// Start is used to start the scheduler. If currently
+// another schedule is running, it is stopped before
+// starting the new one.
+func (s *Scheduler) Start() {
+	log.Println("Starting GitHub Scheduler")
+	action := s.Scraper.RunForActiveQueries
+	interval := 1 * time.Minute
+
+	channel := schedule(action, interval)
+
+	if s.stopChannel != nil {
+		s.stopChannel <- true
+		close(s.stopChannel)
+	}
+	s.stopChannel = channel
+}
+
+// Stop is used to stop the scheduler.
+func (s *Scheduler) Stop() {
+	if s.stopChannel != nil {
+		log.Println("Stopping GitHub Scheduler")
+		s.stopChannel <- true
+		close(s.stopChannel)
+		s.stopChannel = nil
+	}
 }
