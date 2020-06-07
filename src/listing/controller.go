@@ -20,6 +20,7 @@ func newController(service Service, router *mux.Router) controller {
 	router.HandleFunc("/listings", newController.getListingByID).Methods("GET")
 	router.HandleFunc("/listings/query", newController.getListingsByQueryID).Methods("GET")
 	router.HandleFunc("/listings/{sourceName}", newController.getLatestListingsBySourceName).Methods("GET")
+	router.HandleFunc("/listings/{sourceName}/query", newController.getListingsByQueryIDAndSourceName).Methods("GET")
 
 	return newController
 }
@@ -74,6 +75,25 @@ func (c *controller) getLatestListingsBySourceName(writer http.ResponseWriter, r
 	sourceName := pathVariables["sourceName"]
 
 	listings, err := c.service.GetLatestListingsBySourceName(sourceName)
+	if err != nil {
+		writeResponse(writer, err.Error, http.StatusInternalServerError)
+	}
+
+	writeResponse(writer, listings, http.StatusOK)
+}
+
+func (c *controller) getListingsByQueryIDAndSourceName(writer http.ResponseWriter, request *http.Request) {
+	pathVariables := mux.Vars(request)
+	sourceName := pathVariables["sourceName"]
+
+	idString := request.URL.Query().Get("id")
+	queryID, err := strconv.ParseUint(idString, 0, 64)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	listings, err := c.service.GetListingsByQueryIDAndSourceName(queryID, sourceName)
 	if err != nil {
 		writeResponse(writer, err.Error, http.StatusInternalServerError)
 	}
