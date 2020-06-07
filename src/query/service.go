@@ -88,3 +88,16 @@ func (s *ServiceImplementation) ActivateQuery(id uint64) (Query, error) {
 	query.Active = true
 	return s.UpdateQuery(query)
 }
+
+// DeactivateQuery gets the Query for the given ID, sets Query.Active to false,
+// and persists the new state in the datase. The resuling query is returned,
+// along with an error if one has occurred in the repository layer.
+func (s *ServiceImplementation) DeactivateQuery(id uint64) (Query, error) {
+	log.Printf("Deactivating Query %d", id)
+	query, err := s.GetQueryByID(id)
+	if err != nil {
+		return query, err
+	}
+	query.Active = false
+	return s.UpdateQuery(query)
+}
