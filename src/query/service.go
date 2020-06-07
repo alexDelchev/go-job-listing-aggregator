@@ -1,5 +1,7 @@
 package query
 
+import "log"
+
 // Service is used to implement query-specific business
 // logic and read/write query data through the repository.
 type Service interface {
@@ -49,4 +51,16 @@ func (s *ServiceImplementation) GetInactiveQueries() ([]Query, error) {
 // is not nil if there was an error in the repoistory layer.
 func (s *ServiceImplementation) GetAllQueries() ([]Query, error) {
 	return s.repository.getAllQueries()
+}
+
+// CreateQuery persists the given Query model into the database. The resulting
+// query is returned, along with an error if one has occured in the repository
+// layer.
+func (s *ServiceImplementation) CreateQuery(query Query) (Query, error) {
+	log.Printf("Persisting Query %+v", query)
+	createdID, err := s.repository.insertQuery(query)
+	if err != nil {
+		return Query{}, err
+	}
+	return s.GetQueryByID(createdID)
 }
