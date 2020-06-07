@@ -49,3 +49,17 @@ func isPositionListingRelevant(
 
 	return false
 }
+
+func filterNonRelevantPositionListings(
+	keywords []string,
+	positionListings []jobListingRSSModel) []jobListingRSSModel {
+	var result []jobListingRSSModel
+
+	for _, listing := range positionListings {
+		if isPositionListingRelevant(keywords, &listing) {
+			result = append(result, listing)
+		}
+	}
+
+	return result
+}
