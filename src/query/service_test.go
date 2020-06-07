@@ -47,3 +47,20 @@ func TestRepositoryActivateQuery(t *testing.T) {
 			t.Name(), expectedActiveStatus, actualActiveStatus)
 	}
 }
+
+func TestRepositoryDeactivateQuery(t *testing.T) {
+	mock := repositoryMock{}
+	var mockInterface = &mock
+
+	service := NewService(mockInterface)
+
+	service.DeactivateQuery(1)
+
+	expectedActiveStatus := false
+	actualActiveStatus := mock.updateQueryParameter.Active
+
+	if expectedActiveStatus != actualActiveStatus {
+		t.Errorf("%s failed: Expected active status %t, got %t",
+			t.Name(), expectedActiveStatus, actualActiveStatus)
+	}
+}
