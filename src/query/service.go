@@ -75,3 +75,16 @@ func (s *ServiceImplementation) UpdateQuery(query Query) (Query, error) {
 	}
 	return s.GetQueryByID(query.ID)
 }
+
+// ActivateQuery gets the Query for the given ID, sets Query.Active to true,
+// and persists the new state in the datase. The resuling query is returned,
+// along with an error if one has occurred in the repository layer.
+func (s *ServiceImplementation) ActivateQuery(id uint64) (Query, error) {
+	log.Printf("Activating Query %d", id)
+	query, err := s.GetQueryByID(id)
+	if err != nil {
+		return query, err
+	}
+	query.Active = true
+	return s.UpdateQuery(query)
+}
