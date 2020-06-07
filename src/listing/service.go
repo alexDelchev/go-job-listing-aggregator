@@ -27,3 +27,8 @@ type Service interface {
 type ServiceImplementation struct {
 	repository repository
 }
+
+// GetListingByID return the Listing for the given internal ID.
+func (s *ServiceImplementation) GetListingByID(id uint64) (Listing, error) {
+	return s.repository.getListingByID(id)
+}
