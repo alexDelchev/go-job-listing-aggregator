@@ -2,6 +2,7 @@ package query
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -132,6 +133,18 @@ func TestGetInactiveQueries(t *testing.T) {
 	request := httptest.NewRequest("GET", "/queries/inactive", nil)
 
 	controller.getInactiveQueries(writer, request)
+
+	testStatusCode(t, writer, http.StatusInternalServerError)
+}
+
+func TestControllerActivateQuery(t *testing.T) {
+	controller := constructController()
+
+	writer := httptest.NewRecorder()
+	target := fmt.Sprintf("/queries/activate?id=%d", errorQueryID)
+	request := httptest.NewRequest("PATCH", target, nil)
+
+	controller.activateQuery(writer, request)
 
 	testStatusCode(t, writer, http.StatusInternalServerError)
 }
