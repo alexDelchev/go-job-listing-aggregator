@@ -17,3 +17,7 @@ type Service interface {
 
 	DeactivateQuery(id uint64) (Query, error)
 }
+
+type ServiceImplementation struct {
+	repository repository
+}
