@@ -20,3 +20,14 @@ func transformToListingModel(queryID uint64, jobsBGListing *jobsBGListing) listi
 		QueryID:     queryID,
 		SourceName:  SourceName}
 }
+
+func transformToListingModelSlice(queryID uint64, jobsBGListings []jobsBGListing) []listing.Listing {
+	var result []listing.Listing
+
+	for _, jobsBGListing := range jobsBGListings {
+		listing := transformToListingModel(queryID, &jobsBGListing)
+		result = append(result, listing)
+	}
+
+	return result
+}
