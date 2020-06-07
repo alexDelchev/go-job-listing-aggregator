@@ -4,7 +4,7 @@ RUN mkdir -p /go-job-listing-aggregator
  
 WORKDIR /go-job-listing-aggregator
  
-ADD . /go-job-listing-aggregator
+COPY . /go-job-listing-aggregator
 
 COPY go.mod .
 
