@@ -127,7 +127,7 @@ func TestGetLatestListingsBySourceName(t *testing.T) {
 	testResponseStatus(t, writer, http.StatusInternalServerError)
 }
 
-func TestGetLatestListingsByQueryID(t *testing.T) {
+func TestGetListingsByQueryID(t *testing.T) {
 	listingController := constructController()
 
 	writer := httptest.NewRecorder()
@@ -138,7 +138,7 @@ func TestGetLatestListingsByQueryID(t *testing.T) {
 	testResponseStatus(t, writer, http.StatusInternalServerError)
 }
 
-func TestGetLatestListingsByQueryIDBadRequest(t *testing.T) {
+func TestGetListingsByQueryIDBadRequest(t *testing.T) {
 	listingController := constructController()
 
 	writer := httptest.NewRecorder()
