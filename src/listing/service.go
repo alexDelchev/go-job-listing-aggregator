@@ -74,3 +74,22 @@ func (s *ServiceImplementation) CreateListing(listing Listing) (Listing, error) 
 	}
 	return s.GetListingByID(createdID)
 }
+
+// CreateListings checks for the existence of each listing and, if not found, persits it.
+func (s *ServiceImplementation) CreateListings(listings []Listing) {
+	for _, listing := range listings {
+		exists, err := s.ListingExistsInDB(listing)
+		if err != nil {
+			continue
+		}
+
+		if exists {
+			log.Printf(
+				"Listing with external ID %s for source %s already exists in the database",
+				listing.ExternalID, listing.SourceName)
+			continue
+		} else {
+			s.CreateListing(listing)
+		}
+	}
+}
