@@ -124,3 +124,14 @@ func TestGetActiveQueries(t *testing.T) {
 
 	testStatusCode(t, writer, http.StatusInternalServerError)
 }
+
+func TestGetInactiveQueries(t *testing.T) {
+	controller := constructController()
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/queries/inactive", nil)
+
+	controller.getInactiveQueries(writer, request)
+
+	testStatusCode(t, writer, http.StatusInternalServerError)
+}
