@@ -29,3 +29,10 @@ func extractTextFromHTML(data string) string {
 
 	return doc.Text()
 }
+
+// Returns the (company name, position title) wich construct the title property
+func deconstructTitle(title string) (string, string) {
+	tokens := strings.SplitN(title, ":", 2)
+
+	return strings.TrimSpace(tokens[0]), strings.TrimSpace(tokens[1])
+}
