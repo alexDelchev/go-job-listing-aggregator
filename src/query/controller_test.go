@@ -148,3 +148,14 @@ func TestControllerActivateQuery(t *testing.T) {
 
 	testStatusCode(t, writer, http.StatusInternalServerError)
 }
+
+func TestControllerActivateQueryBadRequest(t *testing.T) {
+	controller := constructController()
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("PATCH", "/queries/activate?id=a", nil)
+
+	controller.activateQuery(writer, request)
+
+	testStatusCode(t, writer, http.StatusBadRequest)
+}
