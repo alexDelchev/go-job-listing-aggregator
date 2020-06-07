@@ -2,6 +2,7 @@ package github
 
 import (
 	"fmt"
+	"go-job-listing-aggregator/src/listing"
 	"log"
 	"strings"
 
@@ -28,4 +29,22 @@ func extractTextFromHTML(data string) string {
 	}
 
 	return doc.Text()
+}
+
+func transformToListingModel(queryID uint64, apiModel *jobListingAPIModel) listing.Listing {
+	keywords := strings.Split(apiModel.Title, " ")
+	descriptionText := extractTextFromHTML(apiModel.Description)
+
+	return listing.Listing{
+		ExternalID:   apiModel.ID,
+		Link:         apiModel.URL,
+		Name:         apiModel.Title,
+		WorkSchedule: apiModel.Type,
+		Company:      apiModel.Company,
+		Location:     apiModel.Location,
+		PostingDate:  apiModel.CreatedAt,
+		Description:  descriptionText,
+		Keywords:     keywords,
+		QueryID:      queryID,
+		SourceName:   SourceName}
 }
