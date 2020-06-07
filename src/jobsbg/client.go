@@ -2,6 +2,9 @@ package jobsbg
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
 	"strings"
 )
 
@@ -21,4 +24,23 @@ func generateKeywordsQueryParameter(keywords []string) string {
 func generateSearchURL(keywords []string) string {
 	keywordsQueryParameter := generateKeywordsQueryParameter(keywords)
 	return strings.Replace(searchPageURL, "::keywords::", keywordsQueryParameter, -1)
+}
+
+func executeRequest(request *http.Request) (string, error) {
+	var result string
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+	defer response.Body.Close()
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	result = string(body)
+	return result, nil
 }
