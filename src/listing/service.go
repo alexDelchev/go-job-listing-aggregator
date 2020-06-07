@@ -32,3 +32,9 @@ type ServiceImplementation struct {
 func (s *ServiceImplementation) GetListingByID(id uint64) (Listing, error) {
 	return s.repository.getListingByID(id)
 }
+
+// GetLatestListingsBySourceName returns the last 100 listings for the given
+// source name.
+func (s *ServiceImplementation) GetLatestListingsBySourceName(sourceName string) ([]Listing, error) {
+	return s.repository.getLatestListingsBySourceName(sourceName, listingsBySourceNameLimit)
+}
