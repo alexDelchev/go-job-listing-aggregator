@@ -14,7 +14,7 @@ type Module struct {
 	controller controller
 }
 
-// NewDefaultModule returns a new Module instance where the,
+// NewDefaultModule returns a new Module instance where the
 // repository, Service, and contoller have the default dependencies
 // injected.
 func NewDefaultModule(database *sql.DB, router *mux.Router) Module {
