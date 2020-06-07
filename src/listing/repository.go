@@ -74,3 +74,44 @@ func (r *repositoryImplementation) getListingByID(id uint64) (Listing, error) {
 
 	return result, nil
 }
+
+func (r *repositoryImplementation) getListingsByQueryIDAndSourceName(
+	queryID uint64, sourceName string) ([]Listing, error) {
+
+	var results []Listing
+
+	query := `
+	SELECT 
+		listing_id, 
+		external_id, 
+		link, 
+		name, 
+		company,
+		work_schedule, 
+		location, 
+		posting_date,
+		description,
+		keywords,
+		query_id,
+		source_name
+	FROM
+		listing
+	WHERE
+		query_id = $1
+	AND
+		source_name = $2`
+
+	rows, err := r.database.Query(query, queryID, sourceName)
+	if err != nil {
+		log.Println(err)
+		return results, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		result := scanRows(rows)
+		results = append(results, result)
+	}
+
+	return results, nil
+}
