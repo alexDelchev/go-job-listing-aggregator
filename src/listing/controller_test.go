@@ -104,3 +104,14 @@ func TestGetListingByIDBadRequest(t *testing.T) {
 
 	testResponseStatus(t, writer, http.StatusBadRequest)
 }
+
+func TestGetSourceNames(t *testing.T) {
+	listingController := constructController()
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/sourceNames", nil)
+
+	listingController.getSourceNames(writer, request)
+
+	testResponseStatus(t, writer, http.StatusInternalServerError)
+}
