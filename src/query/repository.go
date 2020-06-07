@@ -122,3 +122,37 @@ func (r *repositoryImplementation) getActiveQueries() ([]Query, error) {
 
 	return results, nil
 }
+
+func (r *repositoryImplementation) getInactiveQueries() ([]Query, error) {
+	var results []Query
+
+	query := `
+		SELECT
+			query_id,
+			keywords,
+			location,
+			active,
+			creation_date
+		FROM
+			query
+		WHERE
+			active = false`
+
+	rows, err := r.database.Query(query)
+	if err != nil {
+		log.Println(err)
+		return results, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var result Query
+		rows.Scan(
+			&result.ID, pq.Array(&result.Keywords), &result.Location, &result.Active,
+			&result.CreationDate)
+
+		results = append(results, result)
+	}
+
+	return results, nil
+}
