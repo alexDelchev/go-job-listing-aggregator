@@ -93,3 +93,14 @@ func TestGetListingByID(t *testing.T) {
 
 	testResponseStatus(t, writer, http.StatusInternalServerError)
 }
+
+func TestGetListingByIDBadRequest(t *testing.T) {
+	listingController := constructController()
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/listings?id=a", nil)
+
+	listingController.getListingByID(writer, request)
+
+	testResponseStatus(t, writer, http.StatusBadRequest)
+}
