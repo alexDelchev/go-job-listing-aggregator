@@ -24,6 +24,7 @@ func newController(service Service, router *mux.Router) controller {
 	router.HandleFunc("/queries/active", newController.getActiveQueries).Methods("GET")
 	router.HandleFunc("/queries/inactive", newController.getInactiveQueries).Methods("GET")
 	router.HandleFunc("/queries/activate", newController.activateQuery).Methods("PATCH").Headers("Content-type", "application/json")
+	router.HandleFunc("/queries/deactivate", newController.deactivateQuery).Methods("PATCH").Headers("Content-type", "application/json")
 
 	return newController
 }
@@ -132,6 +133,22 @@ func (c *controller) activateQuery(writer http.ResponseWriter, request *http.Req
 	}
 
 	query, err := c.service.ActivateQuery(queryID)
+	if err != nil {
+		writeResponse(writer, err.Error, http.StatusInternalServerError)
+	}
+
+	writeResponse(writer, query, http.StatusOK)
+}
+
+func (c *controller) deactivateQuery(writer http.ResponseWriter, request *http.Request) {
+	idString := request.URL.Query().Get("id")
+	queryID, err := strconv.ParseUint(idString, 0, 64)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	query, err := c.service.DeactivateQuery(queryID)
 	if err != nil {
 		writeResponse(writer, err.Error, http.StatusInternalServerError)
 	}
