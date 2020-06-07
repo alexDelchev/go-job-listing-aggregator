@@ -127,3 +127,29 @@ func processListingElements(selection *goquery.Selection) []jobsBGListing {
 
 	return result
 }
+
+// Scrape searches the jobs.bg website for the given search query
+func (s *Scraper) Scrape(searchQuery query.Query) {
+	log.Printf("Starting for Query %+v", searchQuery)
+
+	html, err := searchListings(searchQuery.Keywords)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	document, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	listingsTable := document.Find("#search_results_div table").Get(4)
+
+	document = goquery.NewDocumentFromNode(listingsTable)
+	listingElements := document.Find("tbody > tr")
+	results := processListingElements(listingElements)
+
+	resultsTransformed := transformToListingModelSlice(searchQuery.ID, results)
+
+	s.listingService.CreateListings(resultsTransformed)
+}
