@@ -1,6 +1,7 @@
 package github
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -37,5 +38,30 @@ func executeRequest(request *http.Request) ([]byte, error) {
 	}
 
 	result = body
+	return result, nil
+}
+
+func searchPositions(keywords []string, location string) ([]jobListingAPIModel, error) {
+	var result []jobListingAPIModel
+	searchURL := generateSearchURL(keywords, location)
+
+	request, err := http.NewRequest("GET", searchURL, nil)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	responseBody, err := executeRequest(request)
+	if err != nil {
+		return result, err
+	}
+
+	var models []jobListingAPIModel
+	if err := json.Unmarshal(responseBody, &models); err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	result = models
 	return result, nil
 }
