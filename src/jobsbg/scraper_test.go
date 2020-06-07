@@ -4,8 +4,12 @@ package jobsbg
 
 import (
 	"fmt"
+	"go-job-listing-aggregator/src/testutils"
+	"strings"
 	"testing"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 func TestFormatPublishingDateString(t *testing.T) {
@@ -37,5 +41,32 @@ func TestFormatPublishingDateString(t *testing.T) {
 	if expectedLastWeek != actualLastWeek {
 		t.Errorf("%s Expected last week %s, got %s",
 			errorMesssagePrefix, expectedLastWeek, actualLastWeek)
+	}
+}
+
+func TestDeconstructInfoTagsElement(t *testing.T) {
+	const html string = `<span>first element; second; third; fourth</span>`
+
+	var documentHTML string = fmt.Sprintf("<html><body>%s</body></html>", html)
+	document, _ := goquery.NewDocumentFromReader(strings.NewReader(documentHTML))
+
+	element := document.Find("span").First()
+
+	expetectedString := "first element"
+	expectedSlice := []string{"second", "third", "fourth"}
+
+	actualString, actualSlice := deconstructInfoTagsElement(element)
+
+	var errorMesssagePrefix string = fmt.Sprintf("%s failed:", t.Name())
+	if expetectedString != actualString {
+		t.Errorf(
+			"%s Expected first return value %s, got %s",
+			errorMesssagePrefix, expetectedString, actualString)
+	}
+
+	if !testutils.CompareStringSlices(expectedSlice, actualSlice) {
+		t.Errorf(
+			"%s Expected second return value %s, got %s",
+			errorMesssagePrefix, expectedSlice, actualSlice)
 	}
 }
