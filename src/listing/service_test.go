@@ -1,5 +1,7 @@
 package listing
 
+import "testing"
+
 type repositoryMock struct {
 	methodCalls map[string]int
 }
@@ -34,4 +36,21 @@ func (r repositoryMock) listingExists(externalID string, sourceName string) (boo
 func (r repositoryMock) insertListing(listing *Listing) (uint64, error) {
 	r.methodCalls["insertListing"]++
 	return 1, nil
+}
+
+func TestCreateListings(t *testing.T) {
+	mock := repositoryMock{methodCalls: make(map[string]int)}
+
+	service := NewService(mock)
+
+	service.CreateListings(
+		[]Listing{{ExternalID: nonExistingExternalID}, {ExternalID: "EXISTS"}, {ExternalID: nonExistingExternalID}})
+
+	expectedCalls := 2
+	actualCalls := mock.methodCalls["insertListing"]
+
+	if expectedCalls != actualCalls {
+		t.Errorf("%s failed: Expected %d calls of repository.insertListing, got %d",
+			t.Name(), expectedCalls, actualCalls)
+	}
 }
