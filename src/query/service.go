@@ -25,3 +25,9 @@ type Service interface {
 type ServiceImplementation struct {
 	repository repository
 }
+
+// GetQueryByID returns the Query for the given ID. The returned error
+// is not nil if there was an error in the repository layer.
+func (s *ServiceImplementation) GetQueryByID(id uint64) (Query, error) {
+	return s.repository.getQueryByID(id)
+}
