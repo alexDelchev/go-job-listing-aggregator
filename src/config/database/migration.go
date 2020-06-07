@@ -101,6 +101,7 @@ func (mr *MigrationRunner) getMigration(version string) migration {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer rows.Close()
 
 	if rows.Next() {
 		rows.Scan(&result.Version, &result.Description,
