@@ -2,6 +2,7 @@ package listing
 
 import (
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -80,4 +81,15 @@ func testResponseStatus(t *testing.T, writer *httptest.ResponseRecorder, expecte
 		t.Errorf("%s failed: Expected status code %d, got %d",
 			t.Name(), expectedStatusCode, actualStatusCode)
 	}
+}
+
+func TestGetListingByID(t *testing.T) {
+	listingController := constructController()
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/listings?id=0", nil)
+
+	listingController.getListingByID(writer, request)
+
+	testResponseStatus(t, writer, http.StatusInternalServerError)
 }
