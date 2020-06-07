@@ -2,6 +2,8 @@ package listing
 
 import (
 	"database/sql"
+
+	"github.com/lib/pq"
 )
 
 type repository interface {
@@ -22,4 +24,16 @@ type repository interface {
 
 type repositoryImplementation struct {
 	database *sql.DB
+}
+
+func scanRows(rows *sql.Rows) Listing {
+	var result Listing
+
+	rows.Scan(
+		&result.ID, &result.ExternalID, &result.Link, &result.Name,
+		&result.Company, &result.WorkSchedule, &result.Location,
+		&result.PostingDate, &result.Description, pq.Array(&result.Keywords),
+		&result.QueryID, &result.SourceName)
+
+	return result
 }
