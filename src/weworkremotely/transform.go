@@ -2,6 +2,7 @@ package weworkremotely
 
 import (
 	"fmt"
+	"go-job-listing-aggregator/src/listing"
 	"log"
 	"strings"
 
@@ -30,9 +31,26 @@ func extractTextFromHTML(data string) string {
 	return doc.Text()
 }
 
-// Returns the (company name, position title) wich construct the title property
+// Returns the (company name, position title) wich construct the title property.
 func deconstructTitle(title string) (string, string) {
 	tokens := strings.SplitN(title, ":", 2)
 
 	return strings.TrimSpace(tokens[0]), strings.TrimSpace(tokens[1])
+}
+
+func transformToListingModel(queryID uint64, rssModel *jobListingRSSModel) listing.Listing {
+	descriptionText := extractTextFromHTML(rssModel.Description)
+	company, positionName := deconstructTitle(rssModel.Title)
+	keywords := strings.Split(positionName, " ")
+
+	return listing.Listing{
+		ExternalID:  rssModel.ID,
+		Link:        rssModel.Link,
+		Name:        positionName,
+		Company:     company,
+		Keywords:    keywords,
+		PostingDate: rssModel.PubDate,
+		Description: descriptionText,
+		QueryID:     queryID,
+		SourceName:  SourceName}
 }
