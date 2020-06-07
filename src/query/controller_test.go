@@ -2,6 +2,7 @@ package query
 
 import (
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -78,4 +79,15 @@ func testStatusCode(t *testing.T, writer *httptest.ResponseRecorder, expectedSta
 		t.Errorf("%s failed: Expected status code %d, got %d",
 			t.Name(), expectedStatusCode, actualStatusCode)
 	}
+}
+
+func TestGetQueryByID(t *testing.T) {
+	controller := constructController()
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/queries?id=0", nil)
+
+	controller.getQueryByID(writer, request)
+
+	testStatusCode(t, writer, http.StatusInternalServerError)
 }
