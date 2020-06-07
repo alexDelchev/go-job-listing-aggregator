@@ -214,3 +214,22 @@ func (r *repositoryImplementation) getSourceNames() ([]string, error) {
 	return results, nil
 
 }
+
+func (r *repositoryImplementation) listingExists(externalID string, sourceName string) (bool, error) {
+	var result bool
+
+	query := "SELECT EXISTS(SELECT 1 FROM listing WHERE external_id = $1 AND source_name = $2)"
+
+	rows, err := r.database.Query(query, externalID, sourceName)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		rows.Scan(&result)
+	}
+
+	return result, nil
+}
