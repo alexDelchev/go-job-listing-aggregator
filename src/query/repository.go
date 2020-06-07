@@ -91,3 +91,34 @@ func (r *repositoryImplementation) getAllQueries() ([]Query, error) {
 
 	return results, nil
 }
+
+func (r *repositoryImplementation) getActiveQueries() ([]Query, error) {
+	var results []Query
+
+	query := `
+		SELECT
+			query_id,
+			keywords,
+			location,
+			active,
+			creation_date
+		FROM
+			query
+		WHERE
+			active = true`
+
+	rows, err := r.database.Query(query)
+	if err != nil {
+		log.Println(err)
+		return results, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		result := scanRows(rows)
+
+		results = append(results, result)
+	}
+
+	return results, nil
+}
