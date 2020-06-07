@@ -148,3 +148,14 @@ func TestGetLatestListingsByQueryIDBadRequest(t *testing.T) {
 
 	testResponseStatus(t, writer, http.StatusBadRequest)
 }
+
+func TestGetListingsByQueryIDAndSourceName(t *testing.T) {
+	listingController := constructController()
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/listings//query?id=0", nil)
+
+	listingController.getListingsByQueryIDAndSourceName(writer, request)
+
+	testResponseStatus(t, writer, http.StatusInternalServerError)
+}
