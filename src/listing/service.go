@@ -49,3 +49,8 @@ func (s *ServiceImplementation) GetListingsByQueryID(id uint64) ([]Listing, erro
 func (s *ServiceImplementation) GetListingsByQueryIDAndSourceName(queryID uint64, sourceName string) ([]Listing, error) {
 	return s.repository.getListingsByQueryIDAndSourceName(queryID, sourceName)
 }
+
+// GetSourceNames returns all of distinct source names in the listing table.
+func (s *ServiceImplementation) GetSourceNames() ([]string, error) {
+	return s.repository.getSourceNames()
+}
