@@ -56,3 +56,17 @@ func formatPublishingDateString(text string) string {
 		return text
 	}
 }
+
+// deconstructInfoTagsElement splits the text of the element and returns the first token as the first
+// return value and the remaining elements as the second return value.
+func deconstructInfoTagsElement(element *goquery.Selection) (string, []string) {
+	text := element.Text()
+	tokens := strings.Split(text, "; ")
+
+	//trim tokens
+	for i := 0; i < len(tokens); i++ {
+		tokens[i] = strings.TrimSpace(tokens[i])
+	}
+
+	return tokens[0], tokens[1:]
+}
