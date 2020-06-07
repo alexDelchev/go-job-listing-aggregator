@@ -115,3 +115,14 @@ func TestGetSourceNames(t *testing.T) {
 
 	testResponseStatus(t, writer, http.StatusInternalServerError)
 }
+
+func TestGetLatestListingsBySourceName(t *testing.T) {
+	listingController := constructController()
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/listings/", nil)
+
+	listingController.getLatestListingsBySourceName(writer, request)
+
+	testResponseStatus(t, writer, http.StatusInternalServerError)
+}
