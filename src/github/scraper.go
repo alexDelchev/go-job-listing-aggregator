@@ -7,18 +7,18 @@ import (
 	"sync"
 )
 
-// Scraper contains a listing service and query service
+// Scraper contains a listing service and query service.
 type Scraper struct {
 	listingService listing.Service
 	queryService   query.Service
 }
 
-// NewScraper returns a new instance
+// NewScraper returns a new instance.
 func NewScraper(listingService listing.Service, queryService query.Service) Scraper {
 	return Scraper{listingService: listingService, queryService: queryService}
 }
 
-// Scrape fetches job listings from github for the given Query
+// Scrape fetches job listings from github for the given Query.
 func (s *Scraper) Scrape(searchQuery query.Query) {
 	log.Printf("Starting for Query %+v", searchQuery)
 
@@ -31,7 +31,7 @@ func (s *Scraper) Scrape(searchQuery query.Query) {
 	s.listingService.CreateListings(resultsTransformed)
 }
 
-// RunForActiveQueries calls Scrape in paralel for all active queries
+// RunForActiveQueries calls Scrape in paralel for all active queries.
 func (s *Scraper) RunForActiveQueries() {
 	queries, err := s.queryService.GetActiveQueries()
 	if err != nil {
