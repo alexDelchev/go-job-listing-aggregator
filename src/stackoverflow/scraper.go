@@ -3,6 +3,7 @@ package stackoverflow
 import (
 	"go-job-listing-aggregator/src/listing"
 	"go-job-listing-aggregator/src/query"
+	"log"
 )
 
 // Scraper extracts listings from the StackOverflow rss feed.
@@ -14,4 +15,17 @@ type Scraper struct {
 // NewScraper returns a new instance.
 func NewScraper(listingService listing.Service, queryService query.Service) Scraper {
 	return Scraper{listingService: listingService, queryService: queryService}
+}
+
+// Scrape extracts listings from the rss feed for the given serach Query.
+func (s *Scraper) Scrape(searchQuery query.Query) {
+	log.Printf("Starting for Query %+v", searchQuery)
+
+	results, err := searchPositions(searchQuery.Keywords, searchQuery.Location)
+	if err != nil {
+		return
+	}
+	resultsTransformed := transformToListingModelSlice(searchQuery.ID, results)
+
+	s.listingService.CreateListings(resultsTransformed)
 }
