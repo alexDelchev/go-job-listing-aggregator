@@ -44,3 +44,22 @@ func executeRequest(request *http.Request) (string, error) {
 	result = string(body)
 	return result, nil
 }
+
+func searchListings(keywords []string) (string, error) {
+	var result string
+	url := generateSearchURL(keywords)
+
+	request, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	response, err := executeRequest(request)
+	if err != nil {
+		return result, err
+	}
+
+	result = response
+	return result, err
+}
