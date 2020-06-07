@@ -2,6 +2,8 @@ package listing
 
 import (
 	"errors"
+
+	"github.com/gorilla/mux"
 )
 
 type serviceMock struct{}
@@ -60,4 +62,11 @@ func (s serviceMock) CreateListing(listing Listing) (Listing, error) {
 
 func (s serviceMock) CreateListings(listings []Listing) {
 	return
+}
+
+func constructController() controller {
+	listingService := serviceMock{}
+	router := mux.NewRouter()
+
+	return newController(listingService, router)
 }
