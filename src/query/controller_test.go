@@ -2,6 +2,8 @@ package query
 
 import (
 	"errors"
+
+	"github.com/gorilla/mux"
 )
 
 type serviceMock struct{}
@@ -58,4 +60,11 @@ func (s serviceMock) DeactivateQuery(id uint64) (Query, error) {
 	}
 
 	return Query{}, nil
+}
+
+func constructController() controller {
+	mock := serviceMock{}
+	router := mux.NewRouter()
+
+	return newController(mock, router)
 }
