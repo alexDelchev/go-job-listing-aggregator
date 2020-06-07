@@ -7,3 +7,10 @@ type jobListingRSSModel struct {
 	Description string `xml:"description"`
 	PubDate     string `xml:"PubDate"`
 }
+
+type jobsRSSChannel struct {
+	Title            string               `xml:"title"`
+	Link             string               `xml:"link"`
+	Description      string               `xml:"decription"`
+	PositionListings []jobListingRSSModel `xml:"item"`
+}
