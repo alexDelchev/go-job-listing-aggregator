@@ -1,5 +1,9 @@
 package query
 
+import (
+	"database/sql"
+)
+
 type repository interface {
 	getQueryByID(id uint64) (Query, error)
 
@@ -12,4 +16,8 @@ type repository interface {
 	insertQuery(query Query) (uint64, error)
 
 	updateQuery(query Query) (bool, error)
+}
+
+type repositoryImplementation struct {
+	database *sql.DB
 }
