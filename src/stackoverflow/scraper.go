@@ -4,6 +4,7 @@ import (
 	"go-job-listing-aggregator/src/listing"
 	"go-job-listing-aggregator/src/query"
 	"log"
+	"sync"
 )
 
 // Scraper extracts listings from the StackOverflow rss feed.
@@ -28,4 +29,26 @@ func (s *Scraper) Scrape(searchQuery query.Query) {
 	resultsTransformed := transformToListingModelSlice(searchQuery.ID, results)
 
 	s.listingService.CreateListings(resultsTransformed)
+}
+
+// RunForActiveQueries calls Scraper concurrently for all active queries.
+func (s *Scraper) RunForActiveQueries() {
+	queries, err := s.queryService.GetActiveQueries()
+	if err != nil {
+		log.Println("Error in while fetching active queries")
+		return
+	}
+
+	var waitGroup sync.WaitGroup
+
+	for _, searchQuery := range queries {
+		waitGroup.Add(1)
+
+		go func(searchQuery query.Query) {
+			defer waitGroup.Done()
+			s.Scrape(searchQuery)
+		}(searchQuery)
+	}
+
+	waitGroup.Wait()
 }
