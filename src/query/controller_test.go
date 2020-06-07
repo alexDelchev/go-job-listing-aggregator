@@ -2,6 +2,8 @@ package query
 
 import (
 	"errors"
+	"net/http/httptest"
+	"testing"
 
 	"github.com/gorilla/mux"
 )
@@ -67,4 +69,13 @@ func constructController() controller {
 	router := mux.NewRouter()
 
 	return newController(mock, router)
+}
+
+func testStatusCode(t *testing.T, writer *httptest.ResponseRecorder, expectedStatusCode int) {
+	actualStatusCode := writer.Result().StatusCode
+
+	if expectedStatusCode != actualStatusCode {
+		t.Errorf("%s failed: Expected status code %d, got %d",
+			t.Name(), expectedStatusCode, actualStatusCode)
+	}
 }
