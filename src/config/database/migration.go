@@ -23,13 +23,13 @@ type migration struct {
 	ScriptExecutionTime time.Time
 }
 
-// MigrationRunner reads migration files and executes them
+// MigrationRunner reads and executes migrations.
 type MigrationRunner struct {
 	database *sql.DB
 }
 
 // NewMigrationRunner creates the migration table if it does not
-// exist, and returns a new MigrationRunner instance
+// exist, and returns a new MigrationRunner instance.
 func NewMigrationRunner(database *sql.DB) MigrationRunner {
 	mr := MigrationRunner{database: database}
 	mr.ensureVersionTableExistence()
