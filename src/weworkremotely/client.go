@@ -1,6 +1,7 @@
 package weworkremotely
 
 import (
+	"encoding/xml"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -26,5 +27,26 @@ func executeRequest(request *http.Request) ([]byte, error) {
 	}
 
 	result = body
+	return result, nil
+}
+
+func searchPositions(keywords []string) ([]jobListingRSSModel, error) {
+	var result []jobListingRSSModel
+
+	request, err := http.NewRequest("GET", rssURL, nil)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	responseBody, err := executeRequest(request)
+
+	var response jobsRSSFeed
+	if err := xml.Unmarshal(responseBody, &response); err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	result = response.Channel.PositionListings
 	return result, nil
 }
