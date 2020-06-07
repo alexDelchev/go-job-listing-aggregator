@@ -1,6 +1,7 @@
 package stackoverflow
 
 import (
+	"log"
 	"time"
 )
 
@@ -30,4 +31,18 @@ func schedule(action task, interval time.Duration) chan<- bool {
 	}()
 
 	return quit
+}
+
+// Start starts the scheduling.
+func (s *Scheduler) Start() {
+	log.Println("Starting StackOverflow Scheduler")
+	action := s.Scraper.RunForActiveQueries
+	interval := 1 * time.Minute
+
+	channel := schedule(action, interval)
+
+	if s.stopChannel != nil {
+		s.stopChannel <- true
+	}
+	s.stopChannel = channel
 }
