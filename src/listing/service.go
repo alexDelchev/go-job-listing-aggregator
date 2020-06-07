@@ -38,3 +38,8 @@ func (s *ServiceImplementation) GetListingByID(id uint64) (Listing, error) {
 func (s *ServiceImplementation) GetLatestListingsBySourceName(sourceName string) ([]Listing, error) {
 	return s.repository.getLatestListingsBySourceName(sourceName, listingsBySourceNameLimit)
 }
+
+// GetListingsByQueryID returns all of the listings for the given query ID.
+func (s *ServiceImplementation) GetListingsByQueryID(id uint64) ([]Listing, error) {
+	return s.repository.getListingsByQueryID(id)
+}
