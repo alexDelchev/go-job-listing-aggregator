@@ -1,5 +1,7 @@
 package stackoverflow
 
+import "encoding/xml"
+
 type jobListingRSSModel struct {
 	ID             string   `xml:"guid"`
 	Link           string   `xml:"link"`
@@ -16,4 +18,9 @@ type jobsRSSChannel struct {
 	Link             string               `xml:"link"`
 	Description      string               `xml:"decription"`
 	PositionListings []jobListingRSSModel `xml:"item"`
+}
+
+type jobsRSSFeed struct {
+	XMLName xml.Name       `xml:"rss"`
+	Channel jobsRSSChannel `xml:"channel"`
 }
