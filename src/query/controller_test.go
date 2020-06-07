@@ -102,3 +102,14 @@ func TestGetQueryByIDBadRequest(t *testing.T) {
 
 	testStatusCode(t, writer, http.StatusBadRequest)
 }
+
+func TestGetAllQueries(t *testing.T) {
+	controller := constructController()
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/queries/all", nil)
+
+	controller.getAllQueries(writer, request)
+
+	testStatusCode(t, writer, http.StatusInternalServerError)
+}
