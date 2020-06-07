@@ -1,0 +1,21 @@
+version: '2.1'
+
+services:
+  postgres:
+    image: postgres:12-alpine
+    container_name: postgres
+    ports:
+      - 5683:5432
+    environment:
+      - POSTGRES_USER=go_job_listing_aggregator
+      - POSTGRES_PASSWORD=dba_pass
+      - POSTGRES_DB=listing
+  
+  go-job-listing-aggregator:
+    build: .
+    image: go-job-listing-aggregator:1.0
+    container_name: go-job-listing-aggregator
+    depends_on:
+      - postgres
+    ports:
+      - 9192:9192
