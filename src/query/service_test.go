@@ -1,5 +1,7 @@
 package query
 
+import "testing"
+
 type repositoryMock struct {
 	updateQueryParameter Query
 }
@@ -27,4 +29,21 @@ func (r *repositoryMock) insertQuery(query Query) (uint64, error) {
 func (r *repositoryMock) updateQuery(query Query) (bool, error) {
 	r.updateQueryParameter = query
 	return true, nil
+}
+
+func TestRepositoryActivateQuery(t *testing.T) {
+	mock := repositoryMock{}
+	var mockInterface repository = &mock
+
+	service := NewService(mockInterface)
+
+	service.ActivateQuery(1)
+
+	expectedActiveStatus := true
+	actualActiveStatus := mock.updateQueryParameter.Active
+
+	if expectedActiveStatus != actualActiveStatus {
+		t.Errorf("%s failed: Expected active status %t, got %t",
+			t.Name(), expectedActiveStatus, actualActiveStatus)
+	}
 }
