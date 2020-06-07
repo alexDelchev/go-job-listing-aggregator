@@ -21,6 +21,7 @@ func newController(service Service, router *mux.Router) controller {
 	router.HandleFunc("/listings/query", newController.getListingsByQueryID).Methods("GET")
 	router.HandleFunc("/listings/{sourceName}", newController.getLatestListingsBySourceName).Methods("GET")
 	router.HandleFunc("/listings/{sourceName}/query", newController.getListingsByQueryIDAndSourceName).Methods("GET")
+	router.HandleFunc("/sourceNames", newController.getSourceNames).Methods("GET")
 
 	return newController
 }
@@ -99,4 +100,13 @@ func (c *controller) getListingsByQueryIDAndSourceName(writer http.ResponseWrite
 	}
 
 	writeResponse(writer, listings, http.StatusOK)
+}
+
+func (c *controller) getSourceNames(writer http.ResponseWriter, request *http.Request) {
+	sourceNames, err := c.service.GetSourceNames()
+	if err != nil {
+		writeResponse(writer, err.Error, http.StatusInternalServerError)
+	}
+
+	writeResponse(writer, sourceNames, http.StatusOK)
 }
