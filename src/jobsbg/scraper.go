@@ -1,6 +1,7 @@
 package jobsbg
 
 import (
+	"errors"
 	"go-job-listing-aggregator/src/listing"
 	"go-job-listing-aggregator/src/query"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"golang.org/x/net/html"
 )
 
 const domain = "https://www.jobs.bg/"
@@ -80,4 +82,35 @@ func deconstructListingAnchor(element *goquery.Selection) (string, string, strin
 	idParameter := strings.Replace(href, "job/", "", -1)
 
 	return text, link, idParameter
+}
+
+func processListingElement(node *html.Node) (jobsBGListing, error) {
+	document := goquery.NewDocumentFromNode(node)
+
+	jobAnchor := document.Find("a.joblink")
+	positionName, listingLink, listingID := deconstructListingAnchor(jobAnchor)
+	if listingID == "" {
+		return jobsBGListing{}, errors.New("Could not find job listing ID")
+	}
+
+	companyAnchor := document.Find("a.company_link")
+	companyName := companyAnchor.Text()
+
+	description := getListingDescription(listingLink)
+
+	publishingDate := document.Find("span.explainGray").First().Text()
+	publishingDate = formatPublishingDateString(publishingDate)
+
+	infoTagsWrapper := document.Find("td.offerslistRow:nth-of-type(1) div span:nth-of-type(1)").First()
+	location, keywords := deconstructInfoTagsElement(infoTagsWrapper)
+
+	return jobsBGListing{
+		ID:             listingID,
+		Link:           listingLink,
+		Company:        companyName,
+		Title:          positionName,
+		PublishingDate: publishingDate,
+		Description:    description,
+		Location:       location,
+		Keywords:       keywords}, nil
 }
