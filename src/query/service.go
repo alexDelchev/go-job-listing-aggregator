@@ -64,3 +64,14 @@ func (s *ServiceImplementation) CreateQuery(query Query) (Query, error) {
 	}
 	return s.GetQueryByID(createdID)
 }
+
+// UpdateQuery updates the given Query model.  The resulting query is returned,
+// along with an error if one has occured in the repository layer.
+func (s *ServiceImplementation) UpdateQuery(query Query) (Query, error) {
+	log.Printf("Updating Query %+v", query)
+	_, err := s.repository.updateQuery(query)
+	if err != nil {
+		return Query{}, err
+	}
+	return s.GetQueryByID(query.ID)
+}
