@@ -32,6 +32,12 @@ type ServiceImplementation struct {
 	repository repository
 }
 
+// NewService returns a new service implementation which
+// consists of a pointer to a ServiceImplementation struct.
+func NewService(repository repository) Service {
+	return &ServiceImplementation{repository: repository}
+}
+
 // GetListingByID return the Listing for the given internal ID.
 func (s *ServiceImplementation) GetListingByID(id uint64) (Listing, error) {
 	return s.repository.getListingByID(id)
