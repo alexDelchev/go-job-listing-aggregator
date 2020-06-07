@@ -1,5 +1,9 @@
 package listing
 
+import (
+	"log"
+)
+
 const listingsBySourceNameLimit uint16 = 20
 
 // Service is used to implement listing-specific business
@@ -59,4 +63,14 @@ func (s *ServiceImplementation) GetSourceNames() ([]string, error) {
 // and source name.
 func (s *ServiceImplementation) ListingExistsInDB(listing Listing) (bool, error) {
 	return s.repository.listingExists(listing.ExternalID, listing.SourceName)
+}
+
+// CreateListing persists the given listing and returns the resulting model.
+func (s *ServiceImplementation) CreateListing(listing Listing) (Listing, error) {
+	log.Printf("Persisting listing %+v", listing)
+	createdID, err := s.repository.insertListing(&listing)
+	if err != nil {
+		return Listing{}, err
+	}
+	return s.GetListingByID(createdID)
 }
