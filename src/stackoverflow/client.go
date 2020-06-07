@@ -1,6 +1,7 @@
 package stackoverflow
 
 import (
+	"encoding/xml"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -36,5 +37,30 @@ func executeRequest(request *http.Request) ([]byte, error) {
 	}
 
 	result = body
+	return result, nil
+}
+
+func searchPositions(keywords []string, location string) ([]jobListingRSSModel, error) {
+	var result []jobListingRSSModel
+	url := generateSearchURL(keywords, location)
+
+	request, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	responseBody, err := executeRequest(request)
+	if err != nil {
+		return result, err
+	}
+
+	var response jobsRSSFeed
+	if err := xml.Unmarshal(responseBody, &response); err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	result = response.Channel.PositionListings
 	return result, nil
 }
