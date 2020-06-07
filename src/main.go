@@ -10,6 +10,7 @@ import (
 	"go-job-listing-aggregator/src/listing"
 	"go-job-listing-aggregator/src/query"
 	"go-job-listing-aggregator/src/stackoverflow"
+	"go-job-listing-aggregator/src/weworkremotely"
 
 	"github.com/gorilla/mux"
 )
@@ -30,6 +31,8 @@ func main() {
 	jobsbg.NewDefaultModule(listingModule.Service, queryModule.Service, router)
 
 	stackoverflow.NewDefaultModule(listingModule.Service, queryModule.Service, router)
+
+	weworkremotely.NewDefaultModule(listingModule.Service, queryModule.Service, router)
 
 	log.Println("Started go-job-listing-aggregator")
 	http.ListenAndServe(":9192", router)
