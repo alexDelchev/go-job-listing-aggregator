@@ -38,3 +38,9 @@ func (s *ServiceImplementation) GetQueryByID(id uint64) (Query, error) {
 func (s *ServiceImplementation) GetActiveQueries() ([]Query, error) {
 	return s.repository.getActiveQueries()
 }
+
+// GetInactiveQueries returns a slice of Queries where Query.Active == false.
+// The returned error is not nil if there was an error in the repository layer.
+func (s *ServiceImplementation) GetInactiveQueries() ([]Query, error) {
+	return s.repository.getInactiveQueries()
+}
