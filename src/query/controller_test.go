@@ -1,6 +1,8 @@
 package query
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -181,4 +183,18 @@ func TestControllerDeactivateQueryBadRequest(t *testing.T) {
 	controller.deactivateQuery(writer, request)
 
 	testStatusCode(t, writer, http.StatusBadRequest)
+}
+
+func TestCreateQuery(t *testing.T) {
+	controller := constructController()
+
+	query := Query{ID: errorQueryID, Keywords: []string{"test"}}
+	jsonBody, _ := json.Marshal(query)
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("POST", "/queries", bytes.NewReader(jsonBody))
+
+	controller.createQuery(writer, request)
+
+	testStatusCode(t, writer, http.StatusInternalServerError)
 }
