@@ -212,3 +212,17 @@ func TestCreateQueryBadRequest(t *testing.T) {
 
 	testStatusCode(t, writer, http.StatusBadRequest)
 }
+
+func TestUpdateQuery(t *testing.T) {
+	controller := constructController()
+
+	query := Query{ID: errorQueryID, Keywords: []string{"test"}}
+	jsonBody, _ := json.Marshal(query)
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("PUT", "/queries", bytes.NewReader(jsonBody))
+
+	controller.updateQuery(writer, request)
+
+	testStatusCode(t, writer, http.StatusInternalServerError)
+}
