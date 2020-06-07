@@ -152,3 +152,43 @@ func (r *repositoryImplementation) getListingsByQueryID(queryID uint64) ([]Listi
 
 	return results, nil
 }
+
+func (r *repositoryImplementation) getLatestListingsBySourceName(
+	sourceName string, limit uint16) ([]Listing, error) {
+
+	var results []Listing
+
+	query := `
+	SELECT 
+		listing_id, 
+		external_id, 
+		link, 
+		name, 
+		company,
+		work_schedule, 
+		location, 
+		posting_date,
+		description,
+		keywords,
+		query_id,
+		source_name
+	FROM
+		listing
+	WHERE
+		source_name = $1
+	LIMIT $2`
+
+	rows, err := r.database.Query(query, sourceName, limit)
+	if err != nil {
+		log.Println(err)
+		return results, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		result := scanRows(rows)
+		results = append(results, result)
+	}
+
+	return results, nil
+}
