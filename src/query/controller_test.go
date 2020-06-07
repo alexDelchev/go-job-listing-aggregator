@@ -91,3 +91,14 @@ func TestGetQueryByID(t *testing.T) {
 
 	testStatusCode(t, writer, http.StatusInternalServerError)
 }
+
+func TestGetQueryByIDBadRequest(t *testing.T) {
+	controller := constructController()
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/queries?id=a", nil)
+
+	controller.getQueryByID(writer, request)
+
+	testStatusCode(t, writer, http.StatusBadRequest)
+}
