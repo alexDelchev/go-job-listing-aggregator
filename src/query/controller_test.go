@@ -159,3 +159,15 @@ func TestControllerActivateQueryBadRequest(t *testing.T) {
 
 	testStatusCode(t, writer, http.StatusBadRequest)
 }
+
+func TestControllerDeactivateQuery(t *testing.T) {
+	controller := constructController()
+
+	writer := httptest.NewRecorder()
+	target := fmt.Sprintf("/queries/deactivate?id=%d", errorQueryID)
+	request := httptest.NewRequest("PATCH", target, nil)
+
+	controller.deactivateQuery(writer, request)
+
+	testStatusCode(t, writer, http.StatusInternalServerError)
+}
