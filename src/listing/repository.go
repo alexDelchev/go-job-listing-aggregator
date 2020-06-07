@@ -192,3 +192,25 @@ func (r *repositoryImplementation) getLatestListingsBySourceName(
 
 	return results, nil
 }
+
+func (r *repositoryImplementation) getSourceNames() ([]string, error) {
+	var results []string
+
+	query := `SELECT DISTINCT source_name FROM listing`
+
+	rows, err := r.database.Query(query)
+	if err != nil {
+		log.Println(err)
+		return results, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var result string
+		rows.Scan(&result)
+		results = append(results, result)
+	}
+
+	return results, nil
+
+}
