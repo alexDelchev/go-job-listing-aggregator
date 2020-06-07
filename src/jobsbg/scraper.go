@@ -6,6 +6,7 @@ import (
 	"go-job-listing-aggregator/src/query"
 	"log"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -152,4 +153,27 @@ func (s *Scraper) Scrape(searchQuery query.Query) {
 	resultsTransformed := transformToListingModelSlice(searchQuery.ID, results)
 
 	s.listingService.CreateListings(resultsTransformed)
+}
+
+// RunForActiveQueries calls the Scrape function for all active
+// queries in paralel.
+func (s *Scraper) RunForActiveQueries() {
+	queries, err := s.queryService.GetActiveQueries()
+	if err != nil {
+		log.Println("Error in while fetching active queries")
+		return
+	}
+
+	var waitGroup sync.WaitGroup
+
+	for _, searchQuery := range queries {
+		waitGroup.Add(1)
+
+		go func(searchQuery query.Query) {
+			defer waitGroup.Done()
+			s.Scrape(searchQuery)
+		}(searchQuery)
+	}
+
+	waitGroup.Wait()
 }
