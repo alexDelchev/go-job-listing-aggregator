@@ -23,8 +23,8 @@ func newController(service Service, router *mux.Router) controller {
 	router.HandleFunc("/queries/all", newController.getAllQueries).Methods("GET")
 	router.HandleFunc("/queries/active", newController.getActiveQueries).Methods("GET")
 	router.HandleFunc("/queries/inactive", newController.getInactiveQueries).Methods("GET")
-	router.HandleFunc("/queries/activate", newController.activateQuery).Methods("PATCH").Headers("Content-type", "application/json")
-	router.HandleFunc("/queries/deactivate", newController.deactivateQuery).Methods("PATCH").Headers("Content-type", "application/json")
+	router.HandleFunc("/queries/activate", newController.activateQuery).Methods("PATCH")
+	router.HandleFunc("/queries/deactivate", newController.deactivateQuery).Methods("PATCH")
 
 	return newController
 }
