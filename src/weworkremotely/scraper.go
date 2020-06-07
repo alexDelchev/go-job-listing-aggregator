@@ -3,6 +3,7 @@ package weworkremotely
 import (
 	"go-job-listing-aggregator/src/listing"
 	"go-job-listing-aggregator/src/query"
+	"log"
 	"strings"
 )
 
@@ -62,4 +63,21 @@ func filterNonRelevantPositionListings(
 	}
 
 	return result
+}
+
+// Scrape loads the WeWorkRemotely rss feed and filters out non-relevant
+// listings for the given search query. The resulting listings are persisted
+// to the database.
+func (s *Scraper) Scrape(searchQuery query.Query) {
+	log.Printf("Starting for Query %+v", searchQuery)
+
+	results, err := searchPositions(searchQuery.Keywords)
+	if err != nil {
+		return
+	}
+	results = filterNonRelevantPositionListings(searchQuery.Keywords, results)
+
+	resultsTransformed := transformToListingModelSlice(searchQuery.ID, results)
+
+	s.listingService.CreateListings(resultsTransformed)
 }
