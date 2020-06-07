@@ -27,6 +27,10 @@ type repositoryImplementation struct {
 	database *sql.DB
 }
 
+func newRepository(database *sql.DB) repository {
+	return &repositoryImplementation{database: database}
+}
+
 func scanRows(rows *sql.Rows) Listing {
 	var result Listing
 
