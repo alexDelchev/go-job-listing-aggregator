@@ -156,3 +156,31 @@ func (r *repositoryImplementation) getInactiveQueries() ([]Query, error) {
 
 	return results, nil
 }
+
+func (r *repositoryImplementation) insertQuery(query Query) (uint64, error) {
+	var result uint64
+
+	statement := `
+		INSERT INTO query(
+			keywords,
+			location,
+			active
+		) VALUES (
+			$1, $2, $3
+		) RETURNING query_id`
+
+	rows, err := r.database.Query(
+		statement,
+		pq.Array(query.Keywords), query.Location, query.Active)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		rows.Scan(&result)
+	}
+
+	return result, nil
+}
