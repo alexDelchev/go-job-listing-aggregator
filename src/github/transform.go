@@ -48,3 +48,14 @@ func transformToListingModel(queryID uint64, apiModel *jobListingAPIModel) listi
 		QueryID:      queryID,
 		SourceName:   SourceName}
 }
+
+func transformToListingModelSlice(queryID uint64, apiModelSlice []jobListingAPIModel) []listing.Listing {
+	var result []listing.Listing
+
+	for _, apiModel := range apiModelSlice {
+		model := transformToListingModel(queryID, &apiModel)
+		result = append(result, model)
+	}
+
+	return result
+}
