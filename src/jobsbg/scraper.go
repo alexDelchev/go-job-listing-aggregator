@@ -70,3 +70,14 @@ func deconstructInfoTagsElement(element *goquery.Selection) (string, []string) {
 
 	return tokens[0], tokens[1:]
 }
+
+// deconstructListingAnchor returns the element text, full link derived from the href value, and the id
+// parameter of said link.
+func deconstructListingAnchor(element *goquery.Selection) (string, string, string) {
+	text := element.Text()
+	href := element.AttrOr("href", "")
+	link := domain + href
+	idParameter := strings.Replace(href, "job/", "", -1)
+
+	return text, link, idParameter
+}
