@@ -9,6 +9,7 @@ import (
 	"go-job-listing-aggregator/src/jobsbg"
 	"go-job-listing-aggregator/src/listing"
 	"go-job-listing-aggregator/src/query"
+	"go-job-listing-aggregator/src/stackoverflow"
 
 	"github.com/gorilla/mux"
 )
@@ -27,6 +28,8 @@ func main() {
 	github.NewDefaultModule(listingModule.Service, queryModule.Service, router)
 
 	jobsbg.NewDefaultModule(listingModule.Service, queryModule.Service, router)
+
+	stackoverflow.NewDefaultModule(listingModule.Service, queryModule.Service, router)
 
 	log.Println("Started go-job-listing-aggregator")
 	http.ListenAndServe(":9192", router)
