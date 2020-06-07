@@ -63,3 +63,21 @@ func searchListings(keywords []string) (string, error) {
 	result = response
 	return result, err
 }
+
+func getListingPage(url string) (string, error) {
+	var result string
+
+	request, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	response, err := executeRequest(request)
+	if err != nil {
+		return result, err
+	}
+
+	result = response
+	return response, nil
+}
