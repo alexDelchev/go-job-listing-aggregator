@@ -1,5 +1,7 @@
 package query
 
+// Service is used to implement query-specific business
+// logic and read/write query data through the repository
 type Service interface {
 	GetQueryByID(id uint64) (Query, error)
 
@@ -18,6 +20,8 @@ type Service interface {
 	DeactivateQuery(id uint64) (Query, error)
 }
 
+// ServiceImplementation implements the service interface.
+// Contains a query.repository instance
 type ServiceImplementation struct {
 	repository repository
 }
