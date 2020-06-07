@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -197,4 +198,17 @@ func TestCreateQuery(t *testing.T) {
 	controller.createQuery(writer, request)
 
 	testStatusCode(t, writer, http.StatusInternalServerError)
+}
+
+func TestCreateQueryBadRequest(t *testing.T) {
+	controller := constructController()
+
+	jsonBody := "{{{"
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("POST", "/queries", strings.NewReader(jsonBody))
+
+	controller.createQuery(writer, request)
+
+	testStatusCode(t, writer, http.StatusBadRequest)
 }
