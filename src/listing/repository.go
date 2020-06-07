@@ -115,3 +115,40 @@ func (r *repositoryImplementation) getListingsByQueryIDAndSourceName(
 
 	return results, nil
 }
+
+func (r *repositoryImplementation) getListingsByQueryID(queryID uint64) ([]Listing, error) {
+	var results []Listing
+
+	query := `
+	SELECT 
+		listing_id, 
+		external_id, 
+		link, 
+		name, 
+		company,
+		work_schedule, 
+		location, 
+		posting_date,
+		description,
+		keywords,
+		query_id,
+		source_name
+	FROM
+		listing
+	WHERE
+		query_id = $1`
+
+	rows, err := r.database.Query(query, queryID)
+	if err != nil {
+		log.Println(err)
+		return results, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		result := scanRows(rows)
+		results = append(results, result)
+	}
+
+	return results, nil
+}
