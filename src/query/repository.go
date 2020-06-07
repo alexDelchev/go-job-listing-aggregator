@@ -184,3 +184,25 @@ func (r *repositoryImplementation) insertQuery(query Query) (uint64, error) {
 
 	return result, nil
 }
+
+func (r *repositoryImplementation) updateQuery(query Query) (bool, error) {
+	statement := `
+		UPDATE 
+			query
+		SET
+			keywords = $1,
+			location = $2,
+			active = $3
+		WHERE
+			query_id = $4`
+
+	_, err := r.database.Exec(
+		statement, pq.Array(query.Keywords), query.Location, query.Active, query.ID)
+
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+
+	return true, nil
+}
