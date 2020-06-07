@@ -44,3 +44,9 @@ func (s *ServiceImplementation) GetActiveQueries() ([]Query, error) {
 func (s *ServiceImplementation) GetInactiveQueries() ([]Query, error) {
 	return s.repository.getInactiveQueries()
 }
+
+// GetAllQueries returns a slice containing all queries. The returned error
+// is not nil if there was an error in the repoistory layer.
+func (s *ServiceImplementation) GetAllQueries() ([]Query, error) {
+	return s.repository.getAllQueries()
+}
