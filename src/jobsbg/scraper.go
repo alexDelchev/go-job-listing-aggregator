@@ -114,3 +114,16 @@ func processListingElement(node *html.Node) (jobsBGListing, error) {
 		Location:       location,
 		Keywords:       keywords}, nil
 }
+
+func processListingElements(selection *goquery.Selection) []jobsBGListing {
+	var result []jobsBGListing
+
+	for _, node := range selection.Nodes {
+		jobsBGListing, err := processListingElement(node)
+		if err == nil {
+			result = append(result, jobsBGListing)
+		}
+	}
+
+	return result
+}
