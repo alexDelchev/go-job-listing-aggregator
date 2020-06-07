@@ -1,5 +1,9 @@
 package listing
 
+import (
+	"database/sql"
+)
+
 type repository interface {
 	getListingByID(id uint64) (Listing, error)
 
@@ -14,4 +18,8 @@ type repository interface {
 	listingExists(externalID string, sourceName string) (bool, error)
 
 	insertListing(listing *Listing) (uint64, error)
+}
+
+type repositoryImplementation struct {
+	database *sql.DB
 }
