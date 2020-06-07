@@ -18,7 +18,7 @@ func newController(service Service, router *mux.Router) controller {
 	newController := controller{service: service, router: router}
 
 	router.HandleFunc("/queries", newController.getQueryByID).Methods("GET")
-
+	router.HandleFunc("/queries", newController.updateQuery).Methods("PUT").Headers("Content-type", "application/json")
 	return newController
 }
 
@@ -44,6 +44,28 @@ func (c *controller) getQueryByID(writer http.ResponseWriter, request *http.Requ
 	}
 
 	query, err := c.service.GetQueryByID(queryID)
+	if err != nil {
+		writeResponse(writer, err.Error, http.StatusInternalServerError)
+	}
+
+	writeResponse(writer, query, http.StatusOK)
+}
+
+func (c *controller) updateQuery(writer http.ResponseWriter, request *http.Request) {
+	var query Query
+
+	err := json.NewDecoder(request.Body).Decode(&query)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if query.ID == 0 {
+		http.Error(writer, "Invalid Query model", http.StatusBadRequest)
+		return
+	}
+
+	query, err = c.service.UpdateQuery(query)
 	if err != nil {
 		writeResponse(writer, err.Error, http.StatusInternalServerError)
 	}
