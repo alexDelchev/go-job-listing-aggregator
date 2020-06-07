@@ -1,6 +1,9 @@
 package stackoverflow
 
 import (
+	"io/ioutil"
+	"log"
+	"net/http"
 	"strings"
 )
 
@@ -14,4 +17,24 @@ func generateSearchURL(keywords []string, location string) string {
 	result = strings.Replace(result, "::location::", location, -1)
 
 	return result
+}
+
+func executeRequest(request *http.Request) ([]byte, error) {
+	var result []byte
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	defer response.Body.Close()
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+
+	result = body
+	return result, nil
 }
