@@ -233,3 +233,48 @@ func (r *repositoryImplementation) listingExists(externalID string, sourceName s
 
 	return result, nil
 }
+
+func (r *repositoryImplementation) insertListing(listing *Listing) (uint64, error) {
+	var result uint64
+
+	statement := `
+		INSERT INTO listing(
+			external_id,
+			link,
+			name,
+			work_schedule,
+			company,
+			location,
+			posting_date,
+			description,
+			keywords,
+			query_id,
+			source_name
+		) VALUES (
+			$1, $2, $3, $4,
+			$5, $6, $7, $8,
+			$9, $10, $11
+		) RETURNING
+			listing_id`
+
+	rows, err := r.database.Query(
+		statement,
+		listing.ExternalID, listing.Link,
+		listing.Name, listing.WorkSchedule,
+		listing.Company, listing.Location,
+		listing.PostingDate, listing.Description,
+		pq.Array(listing.Keywords), listing.QueryID,
+		listing.SourceName)
+
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		rows.Scan(&result)
+	}
+
+	return result, nil
+}
