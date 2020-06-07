@@ -2,6 +2,7 @@ package query
 
 import (
 	"database/sql"
+	"log"
 
 	"github.com/lib/pq"
 )
@@ -32,4 +33,32 @@ func scanRows(rows *sql.Rows) Query {
 		&result.CreationDate)
 
 	return result
+}
+
+func (r *repositoryImplementation) getQueryByID(id uint64) (Query, error) {
+	var result Query
+	query := `
+		SELECT
+			query_id,
+			keywords,
+			location,
+			active,
+			creation_date
+		FROM
+			query
+		WHERE
+			query_id = $1`
+
+	rows, err := r.database.Query(query, id)
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		result = scanRows(rows)
+	}
+
+	return result, nil
 }
