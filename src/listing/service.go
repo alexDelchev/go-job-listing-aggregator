@@ -21,3 +21,9 @@ type Service interface {
 
 	CreateListings(listings []Listing)
 }
+
+// ServiceImplementation implements the Service interface.
+// Contains a repository instance which is not exported."
+type ServiceImplementation struct {
+	repository repository
+}
