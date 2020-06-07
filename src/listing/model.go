@@ -1,6 +1,6 @@
 package listing
 
-// Listing represents a job listing
+// Listing represents a job listing.
 type Listing struct {
 	ID           uint64   `json:"id"`
 	ExternalID   string   `json:"externalid"`

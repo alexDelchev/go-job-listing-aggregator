@@ -13,14 +13,14 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// Database contains a *sql.DB pointer and a migration runner
+// Database contains a *sql.DB pointer and a migration runner.
 type Database struct {
 	DB              *sql.DB
 	migrationRunner MigrationRunner
 }
 
 // NewDatabase returns a new Database instance and invokes
-// its migration runner
+// its migration runner after the databse is successfully pinged.
 func NewDatabase() Database {
 	database := newDB()
 
