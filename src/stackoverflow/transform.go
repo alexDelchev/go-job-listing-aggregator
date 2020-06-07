@@ -2,6 +2,7 @@ package stackoverflow
 
 import (
 	"fmt"
+	"go-job-listing-aggregator/src/listing"
 	"log"
 	"strings"
 
@@ -28,4 +29,19 @@ func extractTextFromHTML(data string) string {
 	}
 
 	return doc.Text()
+}
+
+func transformToListingModel(queryID uint64, rssModel *jobListingRSSModel) listing.Listing {
+	descriptionText := extractTextFromHTML(rssModel.Description)
+
+	return listing.Listing{
+		ExternalID:  rssModel.ID,
+		Link:        rssModel.Link,
+		Name:        rssModel.Title,
+		Company:     rssModel.AuthorName,
+		Keywords:    rssModel.Categories,
+		PostingDate: rssModel.PublishingDate,
+		Description: descriptionText,
+		QueryID:     queryID,
+		SourceName:  SourceName}
 }
