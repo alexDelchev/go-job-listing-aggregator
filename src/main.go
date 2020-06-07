@@ -6,6 +6,7 @@ import (
 
 	"go-job-listing-aggregator/src/config/database"
 	"go-job-listing-aggregator/src/github"
+	"go-job-listing-aggregator/src/jobsbg"
 	"go-job-listing-aggregator/src/listing"
 	"go-job-listing-aggregator/src/query"
 
@@ -24,6 +25,8 @@ func main() {
 	queryModule := query.NewDefaultModule(databaseConfig.DB, router)
 
 	github.NewDefaultModule(listingModule.Service, queryModule.Service, router)
+
+	jobsbg.NewDefaultModule(listingModule.Service, queryModule.Service, router)
 
 	log.Println("Started go-job-listing-aggregator")
 	http.ListenAndServe(":9192", router)
