@@ -21,6 +21,7 @@ func newController(service Service, router *mux.Router) controller {
 	router.HandleFunc("/queries", newController.updateQuery).Methods("PUT").Headers("Content-type", "application/json")
 	router.HandleFunc("/queries", newController.createQuery).Methods("POST").Headers("Content-type", "application/json")
 	router.HandleFunc("/queries/all", newController.getAllQueries).Methods("GET")
+	router.HandleFunc("/queries/active", newController.getActiveQueries).Methods("GET")
 
 	return newController
 }
@@ -95,6 +96,15 @@ func (c *controller) updateQuery(writer http.ResponseWriter, request *http.Reque
 
 func (c *controller) getAllQueries(writer http.ResponseWriter, request *http.Request) {
 	queries, err := c.service.GetAllQueries()
+	if err != nil {
+		writeResponse(writer, err.Error, http.StatusInternalServerError)
+	}
+
+	writeResponse(writer, queries, http.StatusOK)
+}
+
+func (c *controller) getActiveQueries(writer http.ResponseWriter, request *http.Request) {
+	queries, err := c.service.GetActiveQueries()
 	if err != nil {
 		writeResponse(writer, err.Error, http.StatusInternalServerError)
 	}
