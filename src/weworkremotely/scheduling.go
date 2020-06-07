@@ -46,3 +46,12 @@ func (s *Scheduler) Start() {
 	}
 	s.stopChannel = channel
 }
+
+// Stop stops the scheduling.
+func (s *Scheduler) Stop() {
+	if s.stopChannel != nil {
+		log.Println("Stopping WeWorkRemotely Scheduler")
+		s.stopChannel <- true
+		s.stopChannel = nil
+	}
+}
