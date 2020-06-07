@@ -47,3 +47,12 @@ func (s *Scheduler) Start() {
 	}
 	s.stopChannel = channel
 }
+
+// Stop stops the scheduled execution of Service.RunForActiveQueries.
+func (s *Scheduler) Stop() {
+	if s.stopChannel != nil {
+		log.Println("Stopping Jobs.bg Scheduler")
+		s.stopChannel <- true
+		s.stopChannel = nil
+	}
+}
