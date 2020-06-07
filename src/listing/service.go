@@ -54,3 +54,9 @@ func (s *ServiceImplementation) GetListingsByQueryIDAndSourceName(queryID uint64
 func (s *ServiceImplementation) GetSourceNames() ([]string, error) {
 	return s.repository.getSourceNames()
 }
+
+// ListingExistsInDB returns whether a Listing exists with the same extrenal ID
+// and source name.
+func (s *ServiceImplementation) ListingExistsInDB(listing Listing) (bool, error) {
+	return s.repository.listingExists(listing.ExternalID, listing.SourceName)
+}
