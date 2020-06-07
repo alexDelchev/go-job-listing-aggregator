@@ -28,3 +28,24 @@ func containsAnyString(text string, tokens []string) bool {
 
 	return false
 }
+
+func isPositionListingRelevant(
+	keywords []string,
+	positionListing *jobListingRSSModel) bool {
+	var keywordsLowerCase []string
+	for _, word := range keywords {
+		keywordsLowerCase = append(keywordsLowerCase, strings.ToLower(word))
+	}
+
+	lowerCaseText := strings.ToLower(positionListing.Title)
+	if containsAnyString(lowerCaseText, keywordsLowerCase) {
+		return true
+	}
+
+	lowerCaseText = strings.ToLower(positionListing.Description)
+	if containsAnyString(lowerCaseText, keywordsLowerCase) {
+		return true
+	}
+
+	return false
+}
