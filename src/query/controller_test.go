@@ -226,3 +226,16 @@ func TestUpdateQuery(t *testing.T) {
 
 	testStatusCode(t, writer, http.StatusInternalServerError)
 }
+
+func TestUpdateQueryBadRequest(t *testing.T) {
+	controller := constructController()
+
+	jsonBody := "{{{"
+
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest("PUT", "/queries", strings.NewReader(jsonBody))
+
+	controller.updateQuery(writer, request)
+
+	testStatusCode(t, writer, http.StatusBadRequest)
+}
