@@ -17,3 +17,8 @@ func generateKeywordsQueryParameter(keywords []string) string {
 
 	return builder.String()
 }
+
+func generateSearchURL(keywords []string) string {
+	keywordsQueryParameter := generateKeywordsQueryParameter(keywords)
+	return strings.Replace(searchPageURL, "::keywords::", keywordsQueryParameter, -1)
+}
