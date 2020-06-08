@@ -9,10 +9,10 @@ empty PostgreSQL database accessible through the docker network.
 
 ## Dependencies
 
- - github.com/PuerkitoBio/goquery v1.5.1 - used for text extraction from html documents.
- - github.com/gorilla/mux v1.7.4 - used for routing incoming http requests to handler functions.
- - github.com/lib/pq v1.6.0 - PostgreSQL GO driver.
- - golang.org/x/net v0.0.0-20200528225125-3c3fba18258b - used for html parsing in combination with goquery.
+ - `github.com/PuerkitoBio/goquery` - `v1.5.1` - used for text extraction from html documents.
+ - `github.com/gorilla/mux` - `v1.7.4` - used for routing incoming http requests to handler functions.
+ - `github.com/lib/pq` - `v1.6.0` - PostgreSQL GO driver.
+ - `golang.org/x/net` - `v0.0.0-20200528225125-3c3fba18258b` - used for html parsing in combination with goquery.
 
 ## Structure
 
